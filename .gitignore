@@ -1,0 +1,5 @@
+node_modules/
+static/frontend/dist/
+*.tsbuildinfo
+.env*
+

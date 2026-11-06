@@ -1,0 +1,53 @@
+modules:
+  jira:projectPage:
+    - key: creditclock-project
+      resource: main
+      resolver:
+        function: resolver
+      title: CreditClock
+  jira:issueContext:
+    - key: creditclock-issue
+      resource: main
+      resolver:
+        function: resolver
+      title: CreditClock
+      label: CreditClock
+      description: Potential vendor SLA follow-up
+  function:
+    - key: resolver
+      handler: index.handler
+    - key: issue-event
+      handler: index.onIssueEvent
+    - key: daily-deadline
+      handler: index.onDailyDeadlineScan
+  trigger:
+    - key: issue-discovery
+      function: issue-event
+      events:
+        - avi:jira:created:issue
+        - avi:jira:updated:issue
+      filter:
+        ignoreSelf: true
+  scheduledTrigger:
+    - key: creditclock-daily-deadline
+      function: daily-deadline
+      interval: day
+resources:
+  - key: main
+    path: static/frontend/dist
+permissions:
+  scopes:
+    - read:jira-work
+    - storage:app
+app:
+  runtime:
+    name: nodejs22.x
+  storage:
+    entities:
+      - name: policy_control
+        attributes:
+          revision:
+            type: integer
+          activeId:
+            type: string
+  id: ari:cloud:ecosystem::app/f7b984a4-874f-4c46-93d9-765e5a10a7d4
